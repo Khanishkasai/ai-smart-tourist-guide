@@ -1,0 +1,83 @@
+/* Design Token System: "Spatial Obsidian" */
+
+:root {
+  /* Spacing System (8px Grid Scale) */
+  --space-0-5: 4px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+
+  /* Color Palette Tokens */
+  --color-obsidian-bg: #08090C;
+  --color-obsidian-surface-01: rgba(16, 18, 26, 0.65);
+  --color-obsidian-surface-02: rgba(24, 28, 40, 0.80);
+  --color-obsidian-surface-hover: rgba(32, 38, 54, 0.90);
+  
+  --color-border-subtle: rgba(255, 255, 255, 0.10);
+  --color-border-medium: rgba(255, 255, 255, 0.18);
+  --color-border-accent: rgba(96, 165, 250, 0.40);
+
+  --color-text-primary: #F3F4F6;
+  --color-text-secondary: #9CA3AF;
+  --color-text-tertiary: #6B7280;
+  --color-text-accent: #60A5FA;
+
+  /* Environmental Illumination Glow Meshes */
+  --env-tokyo-glow: radial-gradient(circle at 50% 35%, rgba(37, 99, 235, 0.32), rgba(8, 9, 12, 0) 75%);
+  --env-swiss-glow: radial-gradient(circle at 50% 35%, rgba(186, 230, 253, 0.25), rgba(8, 9, 12, 0) 75%);
+  --env-paris-glow: radial-gradient(circle at 50% 35%, rgba(251, 146, 60, 0.25), rgba(8, 9, 12, 0) 75%);
+  --env-iceland-glow: radial-gradient(circle at 50% 35%, rgba(52, 211, 153, 0.25), rgba(8, 9, 12, 0) 75%);
+  --env-amalfi-glow: radial-gradient(circle at 50% 35%, rgba(244, 114, 182, 0.25), rgba(8, 9, 12, 0) 75%);
+
+  /* Motion Curves */
+  --ease-camera-flight: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-fluid-spring: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Glass Utilities with Clean Border Alignment */
+.glass-panel {
+  background: var(--color-obsidian-surface-01);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.60);
+  will-change: transform, opacity;
+}
+
+.glass-panel-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  background: var(--color-obsidian-surface-02);
+  border-color: var(--color-border-medium);
+  box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.75), 0 0 36px rgba(96, 165, 250, 0.15);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+/* Text Shimmer Effect */
+@keyframes text-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-shimmer-text {
+  background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 20%, #ffffff 40%, #60a5fa 70%, #ffffff 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: text-shimmer 7s ease infinite;
+}
