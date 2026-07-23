@@ -1,37 +1,48 @@
-import React, { ReactNode, useRef } from 'react';
-import { Group } from 'three';
-import { PerspectiveCamera } from '@react-three/drei';
-import { Lighting } from './Lighting';
-import { Stars } from './Stars';
-import { BackgroundGlow } from './BackgroundGlow';
-import { Atmosphere } from './Atmosphere';
-import { useSpaceAnimation } from '../../hooks/useSpaceAnimation';
+import React, { ReactNode, useEffect } from 'react';
+import { useThree } from '@react-three/fiber';
 import { EnvironmentalTheme } from '../../types';
 
 interface SpaceSceneProps {
-  children?: ReactNode; // Slot for future components (e.g., Globe, Routes)
+  children?: ReactNode;
   theme?: EnvironmentalTheme;
 }
 
-export const SpaceScene: React.FC<SpaceSceneProps> = ({ children, theme = 'default' }) => {
-  const rigRef = useRef<Group>(null);
-  
-  // Initialize the extremely slow background/camera idle animation on the Rig
-  useSpaceAnimation(rigRef);
+const DebugScene = () => {
+  const { scene } = useThree();
 
+  useEffect(() => {
+    console.clear();
+    console.log("========== SCENE GRAPH ==========");
+
+    scene.traverse((obj) => {
+      console.log({
+        type: obj.type,
+        name: obj.name,
+        uuid: obj.uuid,
+      });
+    });
+
+    console.log("=================================");
+  }, [scene]);
+
+  return null;
+};
+
+export const SpaceScene: React.FC<SpaceSceneProps> = ({
+  children,
+  theme = 'default',
+}) => {
   return (
     <>
-      <Atmosphere theme={theme} />
-      <Lighting theme={theme} />
-      <BackgroundGlow />
-      <Stars />
-      
-      {/* The Camera Rig wrapping the default camera */}
-      <group ref={rigRef}>
-        <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={45} />
-      </group>
+      <DebugScene />
 
-      {/* Central mount point for the future interactive globe and elements */}
+      <ambientLight intensity={0.5} />
+
+      <directionalLight
+        position={[10, 10, 10]}
+        intensity={1}
+      />
+
       <group name="globe-mount-point">
         {children}
       </group>

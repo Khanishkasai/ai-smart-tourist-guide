@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 export const CraftingBackground: React.FC = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-[#06070a]">
-      
+
       {/* 10% Darken Overlay */}
       <div className="absolute inset-0 bg-black/10 z-10" />
 

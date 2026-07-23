@@ -1,28 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PromptBar } from './PromptBar';
 import { VibeChip } from './VibeChip';
-import { VibePreset } from '@/types';
+import { VibePreset, EnvironmentalTheme } from '@/types';
+import { useTypewriter } from '../../hooks/useTypewriter';
 
 interface HeroSectionProps {
-  promptValue: string;
-  onPromptChange: (val: string) => void;
   onPromptSubmit: (prompt: string) => void;
   vibePresets: VibePreset[];
-  onSelectVibePreset: (preset: VibePreset) => void;
-  activePresetId?: string;
+  onThemeChange: (theme: EnvironmentalTheme) => void;
   isSubmitting?: boolean;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  promptValue,
-  onPromptChange,
   onPromptSubmit,
   vibePresets,
-  onSelectVibePreset,
-  activePresetId,
+  onThemeChange,
   isSubmitting = false,
 }) => {
+  const { text: promptValue, typeText, setImmediateText, stopTyping } = useTypewriter(16);
+  const [activePresetId, setActivePresetId] = useState<string | null>(null);
+
+  const handleSelectVibePreset = (preset: VibePreset) => {
+    setActivePresetId(preset.id);
+    onThemeChange(preset.themeGlow);
+    typeText(preset.promptText);
+  };
+
+  const handlePromptChange = (val: string) => {
+    stopTyping();
+    setImmediateText(val);
+    
+    // If user types manually, clear the active preset if it doesn't match
+    if (activePresetId) {
+      const activePreset = vibePresets.find(p => p.id === activePresetId);
+      if (activePreset && val !== activePreset.promptText) {
+        setActivePresetId(null);
+        onThemeChange('default');
+      }
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-8 z-10">
       <div className="max-w-5xl mx-auto w-full text-center flex flex-col items-center">
@@ -64,13 +82,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         >
           <PromptBar
             value={promptValue}
-            onChange={onPromptChange}
+            onChange={handlePromptChange}
             onSubmit={onPromptSubmit}
             isSubmitting={isSubmitting}
           />
         </motion.div>
 
-        {/* Rebuilt Suggestion Section with Raycast/Linear Theme Styling */}
+        {/* Rebuilt Suggestion Section */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -87,7 +105,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 key={preset.id}
                 preset={preset}
                 index={idx}
-                onSelect={onSelectVibePreset}
+                onSelect={handleSelectVibePreset}
                 isActive={activePresetId === preset.id}
               />
             ))}

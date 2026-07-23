@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { CraftingState } from '../types/crafting';
 import { CRAFTING_STEPS, THINKING_MESSAGES } from '../constants/craftingSteps';
 
@@ -8,56 +8,93 @@ export function useCraftingSequence(onCraftingComplete: () => void) {
   const [statusMessageIndex, setStatusMessageIndex] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
-  const startSequence = useCallback(() => {
-    if (craftingState !== 'idle') return;
-    setCraftingState('crafting');
+  const startedRef = useRef(false);
+  const stepIndexRef = useRef(0);
 
-    // Start rotating messages
-    const messageInterval = setInterval(() => {
+  const timeoutsRef = useRef<number[]>([]);
+  const intervalRef = useRef<number | null>(null);
+
+  const clearAllTimers = () => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+  };
+
+  const startSequence = useCallback(() => {
+    if (startedRef.current) return;
+
+    startedRef.current = true;
+
+    setCraftingState('crafting');
+    setCompletedSteps([]);
+    stepIndexRef.current = 0;
+
+    intervalRef.current = window.setInterval(() => {
       setStatusMessageIndex((prev) => (prev + 1) % THINKING_MESSAGES.length);
     }, 2500);
 
-    let currentStepIndex = 0;
-    
     const nextStep = () => {
-      if (currentStepIndex >= CRAFTING_STEPS.length) {
-        clearInterval(messageInterval);
-        
-        // Pause for 800ms after all steps complete
-        setTimeout(() => {
-          setCraftingState('complete');
-          
-          // Wait for "Journey Ready" to be visible, then fade out card
-          setTimeout(() => {
-            setIsFadingOut(true);
-            
-            // After fade out completes, call the callback
-            setTimeout(() => {
-              onCraftingComplete();
-            }, 1000); // 1s fade duration
-          }, 1500); // Wait 1.5s reading time for "Journey Ready"
+      if (stepIndexRef.current >= CRAFTING_STEPS.length) {
+        clearAllTimers();
 
+        const completeTimer = window.setTimeout(() => {
+          setCraftingState('complete');
+
+          const fadeTimer = window.setTimeout(() => {
+            setIsFadingOut(true);
+
+            const finishTimer = window.setTimeout(() => {
+              onCraftingComplete();
+            }, 1000);
+
+            timeoutsRef.current.push(finishTimer);
+          }, 1500);
+
+          timeoutsRef.current.push(fadeTimer);
         }, 800);
+
+        timeoutsRef.current.push(completeTimer);
         return;
       }
 
-      // Complete one step
-      setCompletedSteps((prev) => [...prev, CRAFTING_STEPS[currentStepIndex].id]);
-      currentStepIndex++;
+      const step = CRAFTING_STEPS[stepIndexRef.current];
 
-      // Random delay between 700ms and 1000ms
-      const delay = Math.random() * (1000 - 700) + 700;
-      setTimeout(nextStep, delay);
+      if (!step) {
+        console.error(
+          'Crafting step missing at index',
+          stepIndexRef.current
+        );
+        clearAllTimers();
+        return;
+      }
+
+      setCompletedSteps((prev) => [...prev, step.id]);
+
+      stepIndexRef.current++;
+
+      const delay = Math.random() * 300 + 700;
+
+      const timer = window.setTimeout(nextStep, delay);
+
+      timeoutsRef.current.push(timer);
     };
 
-    // Initial delay before starting steps
-    setTimeout(nextStep, 800);
+    const startTimer = window.setTimeout(nextStep, 800);
 
-  }, [craftingState, onCraftingComplete]);
+    timeoutsRef.current.push(startTimer);
+  }, [onCraftingComplete]);
 
-  // Start sequence automatically on mount
   useEffect(() => {
     startSequence();
+
+    return () => {
+      clearAllTimers();
+      startedRef.current = false;
+    };
   }, [startSequence]);
 
   return {

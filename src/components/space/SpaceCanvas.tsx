@@ -12,6 +12,7 @@ export const SpaceCanvas: React.FC<SpaceCanvasProps> = ({ children, theme = 'def
   return (
     <div className="fixed inset-0 z-0 bg-[#08090C] pointer-events-none">
       <Canvas
+        camera={{ position: [0, 0, 15], fov: 45 }}
         dpr={[1, 2]} // Optimize for retina displays
         gl={{ 
           antialias: true,

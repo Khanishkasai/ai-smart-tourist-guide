@@ -25,8 +25,7 @@ export const CraftingCard: React.FC<CraftingCardProps> = ({
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className="relative w-full max-w-[560px] mx-auto z-20 group"
     >
-      {/* Animated Rotating Border Gradient (Behind the card) */}
-      <div className="absolute -inset-[1px] bg-gradient-to-r from-blue-500/0 via-blue-500/30 to-blue-500/0 rounded-[25px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 animate-[spin_4s_linear_infinite] pointer-events-none" style={{ backgroundSize: '200% 200%' }} />
+
 
       <div className="rounded-[24px] glass-panel p-8 sm:p-10 relative overflow-hidden">
         {/* Subtle top glow inside the card */}

@@ -17,7 +17,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   return (
     <div className="relative min-h-screen bg-[#08090C] text-[#F3F4F6] selection:bg-blue-500/30 selection:text-blue-200 overflow-x-hidden font-sans">
       {/* Background Atmospheric Lighting & Mountain Shader Layer */}
-      <HeroBackground theme={theme} />
+      {/* <HeroBackground theme={theme} /> */}
 
       {/* Fixed Top Glass Navigation */}
       <Navbar onReset={onReset} />
