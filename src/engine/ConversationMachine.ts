@@ -1,4 +1,4 @@
-import { Message, ConversationState, TravelInfo, Question } from '../types/conversation';
+import { Message, ConversationState, TravelInfo } from '../types/conversation';
 
 export type ConversationAction =
   | { type: 'ADD_MESSAGE'; payload: Message }

@@ -1,5 +1,5 @@
 import { useReducer, useCallback, useEffect, useRef, useState } from 'react';
-import { Message, Question, TravelInfo } from '../types/conversation';
+import { Question, TravelInfo } from '../types/conversation';
 import { TRAVEL_QUESTIONS } from '../data/questions';
 import { sleep } from '../utils/async';
 import { BOT_CONFIG } from '../engine/constants';
