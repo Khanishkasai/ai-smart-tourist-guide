@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onReset }) => {
               SPATIAL
             </span>
             <span className="text-[9.5px] font-mono tracking-[0.20em] text-slate-400 uppercase mt-1.5 leading-none">
-              AI INTELLIGENCE
+              AI TRAVEL INTELLIGENCE
             </span>
           </div>
         </motion.div>
